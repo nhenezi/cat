@@ -5,7 +5,9 @@ import System.Exit
 main = getArgs >>= parse >>= putStr
 
 parse ["-h"] = usage >> exit
+parse ["--help"] = usage >> exit
 parse ["-v"] = version >> exit
+parse ["--version"] = version >> exit
 parse [] = getContents
 parse fs = concat `fmap` mapM readFile fs
 
