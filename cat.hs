@@ -10,7 +10,17 @@ parse [] = getContents
 parse fs = concat `fmap` mapM readFile fs
 
 
-usage = putStrLn "Usage cat [OPTION]... [FILE]..."
+usage_text = unlines [
+  "Usage cat [OPTION]... [FILE]...",
+  "Concatenate FILE(s), or standard input, to standard output",
+  "",
+  "-h, --help     display this help and exit",
+  "-v, --version  output version information and exit"
+  ]
+
+
+
+usage = putStrLn usage_text
 version = putStrLn "Cat v0.1"
 
 exit = exitWith ExitSuccess
