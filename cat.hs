@@ -36,7 +36,7 @@ processFiles :: [Flag] -> [String] -> String
 processFiles flags contents = foldl applyFlag (concat contents) flags
 
 applyFlag :: String -> Flag -> String
-applyFlag s LineNumber = unlines $ zipWith (\n line -> (printf "%6d %s" n line)::String) [1::Integer ..] (lines s)
+applyFlag s LineNumber = unlines $ zipWith (\n line -> (printf "%6d  %s" n line)::String) [1::Integer ..] (lines s)
 applyFlag s _ = s
 
 
