@@ -4,6 +4,7 @@ import System.IO
 import System.Environment
 import System.Exit
 import Text.Printf
+import Data.List
 
 main :: IO ()
 main = getArgs >>= parse >>= putStr
@@ -24,7 +25,7 @@ parse fs = do
 processArguments :: [String] -> ([Flag], [String])
 processArguments ls = (flags, files)
   where
-    flags = filter (\x -> x /= None) (map fst res)
+    flags = nub $ filter (\x -> x /= None) (map fst res)
     files = filter (\x -> x /= "") (map snd res)
     res = map processArgument ls
 
