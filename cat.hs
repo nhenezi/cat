@@ -19,8 +19,8 @@ parse ["--version"] = version >> exit
 parse [] = getContents
 parse fs = do
   let (flags, files) = processArguments fs
-  content <- mapM readFile files
-  return $ concat $ fmap (processFile flags) content
+  contents <- mapM readFile files
+  return $ processFiles flags $(lines.concat) contents
 
 processArguments :: [String] -> ([Flag], [String])
 processArguments ls = (flags, files)
@@ -34,20 +34,12 @@ processArgument "-n" = (LineNumber, "")
 processArgument "--number" = (LineNumber, "")
 processArgument s = (None, s)
 
-applyArguments :: [String] -> [String]
-applyArguments fs = map (processFile flags) files
-  where (flags, files) = processArguments fs
+processFiles :: [Flag] -> [String] -> String
+processFiles flags contents = unlines [foldl applyFlag line flags | line <- contents]
 
-processFile :: [Flag] -> String -> String
-processFile flags file = foldr applyFlag file flags
-
-safeHead :: [a] -> Maybe a
-safeHead [] = Nothing
-safeHead (x:xs) = Just x
-
-applyFlag :: Flag -> String -> String
-applyFlag LineNumber s = unlines $ zipWith (\n line-> (printf "%6d %s" n line)::String) [1::Integer ..] (lines s)
-applyFlag _ s = s
+applyFlag :: String -> Flag -> String
+applyFlag s LineNumber = unlines $ zipWith (\n line -> (printf "%6d %s" n line)::String) [1::Integer ..] (lines s)
+applyFlag s _ = s
 
 
 usageText = unlines [
