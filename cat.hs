@@ -8,6 +8,7 @@ main :: IO ()
 main = getArgs >>= parse >>= putStr
 
 data Flag = LineNumber | None deriving (Eq, Show)
+type FileContent = String
 
 parse :: [String] -> IO String
 parse ["-h"] = usage >> exit
@@ -20,22 +21,22 @@ parse fs = do
   contents <- mapM readFile files
   return $ processFiles flags contents
 
-processArguments :: [String] -> ([Flag], [String])
+processArguments :: [String] -> ([Flag], [FilePath])
 processArguments ls = (flags, files)
   where
     flags = nub $ filter (\x -> x /= None) (map fst res)
     files = filter (\x -> x /= "") (map snd res)
     res = map processArgument ls
 
-processArgument :: String -> (Flag, String)
+processArgument :: String -> (Flag, FilePath)
 processArgument "-n" = (LineNumber, "")
 processArgument "--number" = (LineNumber, "")
 processArgument s = (None, s)
 
-processFiles :: [Flag] -> [String] -> String
+processFiles :: [Flag] -> [FilePath] -> FileContent
 processFiles flags contents = foldl applyFlag (concat contents) flags
 
-applyFlag :: String -> Flag -> String
+applyFlag :: FileContent -> Flag -> FileContent
 applyFlag s LineNumber = unlines $ zipWith (\n line -> (printf "%6d  %s" n line)::String) [1::Integer ..] (lines s)
 applyFlag s _ = s
 
