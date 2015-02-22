@@ -20,7 +20,8 @@ parse [] = getContents
 parse fs = do
   let (flags, files) = processArguments fs
   contents <- mapM readFile files
-  return $ processFiles flags $(lines.concat) contents
+  let processed = map (filter (/= '\n')) $ processFiles flags $(lines.concat) contents
+  return $ unlines processed
 
 processArguments :: [String] -> ([Flag], [String])
 processArguments ls = (flags, files)
@@ -34,8 +35,8 @@ processArgument "-n" = (LineNumber, "")
 processArgument "--number" = (LineNumber, "")
 processArgument s = (None, s)
 
-processFiles :: [Flag] -> [String] -> String
-processFiles flags contents = unlines [foldl applyFlag line flags | line <- contents]
+processFiles :: [Flag] -> [String] -> [String]
+processFiles flags contents = [foldl applyFlag line flags | line <- contents]
 
 applyFlag :: String -> Flag -> String
 applyFlag s LineNumber = unlines $ zipWith (\n line -> (printf "%6d %s" n line)::String) [1::Integer ..] (lines s)
