@@ -24,9 +24,9 @@ parse fs = do
 processArguments :: [String] -> ([Flag], [FilePath])
 processArguments ls = (flags, files)
   where
-    flags = nub $ filter (\x -> x /= None) (map fst res)
-    files = filter (\x -> x /= "") (map snd res)
-    res = map processArgument ls
+    flags = nub $ filter (\x -> x /= None) (fmap fst res)
+    files = filter (\x -> x /= "") (fmap snd res)
+    res = fmap processArgument ls
 
 processArgument :: String -> (Flag, FilePath)
 processArgument "-n" = (LineNumber, "")
