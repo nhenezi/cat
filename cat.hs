@@ -12,7 +12,7 @@ parse [] = getContents
 parse fs = concat `fmap` mapM readFile fs
 
 
-usage_text = unlines [
+usageText = unlines [
   "Usage cat [OPTION]... [FILE]...",
   "Concatenate FILE(s), or standard input, to standard output",
   "",
@@ -22,7 +22,7 @@ usage_text = unlines [
 
 
 
-usage = putStrLn usage_text
+usage = putStrLn usageText
 version = putStrLn "Cat v0.1"
 
 exit = exitWith ExitSuccess
