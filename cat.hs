@@ -3,6 +3,7 @@ import System.Environment
 import System.Exit
 import Text.Printf
 import Data.List
+import Data.Functor
 
 main :: IO ()
 main = getArgs >>= parse >>= putStr
@@ -24,9 +25,9 @@ parse fs = do
 processArguments :: [String] -> ([Flag], [FilePath])
 processArguments ls = (flags, files)
   where
-    flags = nub $ filter (\x -> x /= None) (fmap fst res)
-    files = filter (\x -> x /= "") (fmap snd res)
-    res = fmap processArgument ls
+    flags = nub $ filter (\x -> x /= None) (fst <$> res)
+    files = filter (\x -> x /= "") (snd <$> res)
+    res = processArgument <$> ls
 
 processArgument :: String -> (Flag, FilePath)
 processArgument "-n" = (LineNumber, "")
